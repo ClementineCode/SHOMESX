@@ -1,0 +1,46 @@
+// Add or update columns as needed
+add_filter( 'manage_home_posts_columns', 'srhomes_home_columns' );
+function srhomes_home_columns( $columns ) {
+    $new_columns = array(
+        'image' => __( 'Image' ),
+		'title' => __( 'Title' ),
+		'home_price' => __( 'Price' ),
+        'home_bedrooms' => __( 'Bedrooms' ),
+        'home_bathrooms' => __( 'Bathrooms' ),
+        'home_square_footage' => __( 'Sq. Ft.' ),
+		'home_status' => __( 'Status' ),
+        'date' => __( 'Date' ),
+    );
+
+    // Merge the new columns with the existing columns
+    $columns = $new_columns + $columns;
+
+    // Add more ACF fields as needed
+    return $columns;
+}
+
+// Populate ACF data in the columns
+add_action( 'manage_home_posts_custom_column', 'srhomes_home_custom_column', 10, 2 );
+function srhomes_home_custom_column( $column, $post_id ) {
+    switch ( $column ) {
+		case 'home_price':
+            echo get_field( 'price_of_home', $post_id );
+            break;
+        case 'home_bedrooms':
+            echo get_field( 'floorplan_bedrooms', $post_id );
+            break;
+        case 'home_bathrooms':
+            echo get_field( 'floorplan_bathrooms', $post_id );
+            break;
+        case 'home_square_footage':
+            echo get_field( 'floorplan_square_footage', $post_id );
+            break;
+			case 'home_status':
+            if ( get_field( 'status' ) == 1 ) : ?>Active<?php else: ?>InActive
+<?php endif;
+            break;
+        case 'image':
+            ?><div style="background-image:url('<?php echo get_field( 'spec_header_image', $post_id );?>'); width: 100%; height:100px; background-size: contain; background-repeat:no-repeat;"></div><?php
+            break;
+    }
+}
