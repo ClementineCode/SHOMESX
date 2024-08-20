@@ -1,0 +1,42 @@
+// Add or update columns as needed
+add_filter( 'manage_floorplan_posts_columns', 'srhomes_floorplan_columns' );
+function srhomes_floorplan_columns( $columns ) {
+    $new_columns = array(
+		'image' => __( 'Image' ),
+        'title' => __( 'Title' ),
+        'floorplan_bedrooms' => __( 'Bedrooms' ),
+        'floorplan_bathrooms' => __( 'Bathrooms' ),
+        'floorplan_square_footage' => __( 'Sq. Ft.' ),
+		'floorplan_status' => __( 'Status' ),
+        'date' => __( 'Date' ),
+    );
+
+    // Merge the new columns with the existing columns
+    $columns = $new_columns + $columns;
+
+    // Add more ACF fields as needed
+    return $columns;
+}
+
+// Populate ACF data in the columns
+add_action( 'manage_floorplan_posts_custom_column', 'srhomes_floorplan_custom_column', 10, 2 );
+function srhomes_floorplan_custom_column( $column, $post_id ) {
+    switch ( $column ) {
+        case 'floorplan_bedrooms':
+            echo get_field( 'floorplan_bedrooms', $post_id );
+            break;
+        case 'floorplan_bathrooms':
+            echo get_field( 'floorplan_bathrooms', $post_id );
+            break;
+        case 'floorplan_square_footage':
+            echo get_field( 'floorplan_square_footage', $post_id );
+            break;
+			case 'floorplan_status':
+            if ( get_field( 'status' ) == 1 ) : ?>Active<?php else: ?>InActive
+<?php endif;
+            break;
+        case 'image':
+            ?><div style="background-image:url('<?php echo get_field( 'floorplan_header_image', $post_id );?>'); width: 100%; height:100px; background-size: contain; background-repeat:no-repeat;"></div><?php
+            break;
+    }
+}
